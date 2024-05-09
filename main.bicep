@@ -14,9 +14,18 @@ var commonTags = {
   owner: 'CodicePlastico'
 }
 
-resource main 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource main 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: location
   tags: union(commonTags, customTags)
+}
+
+module infrastructure './infrastructure.bicep' = {
+  scope: main
+  name: 'infrastructure'
+  params: {
+    location: location
+    commonTags: commonTags
+  }
 }
 
