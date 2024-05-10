@@ -1,0 +1,57 @@
+name: 'Bicep Whatif / Deploy'
+
+on:
+  pull_request:
+  
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  
+env:
+  LOCATION: westeurope
+
+jobs:
+  evaluate-infrastructure-changes:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        
+    - name: Bicep Lint
+      run: |
+        az bicep lint --file main.bicep
+        
+    - name: Bicep what-if
+      name: whatif
+      run: |
+          WHATIF=$(az deployment sub what-if \
+            --name bicep-github-actions-${{ github.run_id }} \
+            --location $LOCATION \
+            --template-file main.bicep \
+            --parameters resourceGroupName=bicep-github-actions-live)
+          echo "whatif=$WHATIF" >> "$GITHUB_OUTPUT"
+
+    - name: Push Whatif Output to PR
+      uses: actions/github-script@v6
+      env:
+        SUMMARY: "${{ steps.whatif.outputs.whatif }}"
+      with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = `${process.env.SUMMARY}`;
+            github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+            })
+            
+  

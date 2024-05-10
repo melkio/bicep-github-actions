@@ -20,12 +20,12 @@ resource main 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   tags: union(commonTags, customTags)
 }
 
-module infrastructure './infrastructure.bicep' = {
-  scope: main
-  name: 'infrastructure'
-  params: {
-    location: location
-    commonTags: commonTags
-  }
-}
+// module infrastructure './infrastructure.bicep' = {
+//   scope: main
+//   name: 'infrastructure'
+//   params: {
+//     location: location
+//     commonTags: commonTags
+//   }
+// }
 
