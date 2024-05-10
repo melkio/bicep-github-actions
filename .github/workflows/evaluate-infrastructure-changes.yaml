@@ -1,9 +1,13 @@
-name: 'Bicep Whatif / Deploy'
+name: Whatif
 
 on:
-  push:
-    branches-ignore:
-    - master
+  pull_request:
+    types: 
+    - opened
+    - reopened
+    - edited
+    branches:
+    - master 
   
 permissions:
   id-token: write
