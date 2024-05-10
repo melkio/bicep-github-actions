@@ -43,7 +43,17 @@ jobs:
             --location $LOCATION \
             --template-file main.bicep \
             --parameters resourceGroupName=bicep-github-actions-live)
-          echo "whatif=$WHATIF" >> "$GITHUB_OUTPUT"
+          
+          delimiter="$(openssl rand -hex 8)"
+          echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+          echo "## Whatif Output" >> $GITHUB_OUTPUT
+          echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo '```' >> $GITHUB_OUTPUT
+          echo "$WHATIF" >> $GITHUB_OUTPUT
+          echo '```' >> $GITHUB_OUTPUT
+          echo "</details>" >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
 
     - name: Push Whatif Output to PR
       uses: actions/github-script@v6
