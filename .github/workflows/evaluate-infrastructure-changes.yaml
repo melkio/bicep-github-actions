@@ -32,7 +32,7 @@ jobs:
         az bicep lint --file main.bicep
         
     - name: Bicep what-if
-      name: whatif
+      id: whatif
       run: |
           WHATIF=$(az deployment sub what-if \
             --name bicep-github-actions-${{ github.run_id }} \
