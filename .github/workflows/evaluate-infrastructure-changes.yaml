@@ -45,7 +45,7 @@ jobs:
             --parameters resourceGroupName=bicep-github-actions-live)
           
           delimiter="$(openssl rand -hex 8)"
-          echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+          echo "VALUE<<${delimiter}" >> $GITHUB_OUTPUT
           echo "## Whatif Output" >> $GITHUB_OUTPUT
           echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
@@ -58,7 +58,7 @@ jobs:
     - name: Push Whatif Output to PR
       uses: actions/github-script@v6
       env:
-        SUMMARY: "${{ steps.whatif.outputs.whatif }}"
+        SUMMARY: "${{ steps.whatif.outputs.VALUE }}"
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
